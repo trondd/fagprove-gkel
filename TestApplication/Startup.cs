@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using TestApplication.Diagnostics;
 
 namespace TestApplication
 {
@@ -24,6 +26,7 @@ namespace TestApplication
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddHealthChecksBuilder();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,11 +49,24 @@ namespace TestApplication
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            app.UseEndpoints(endpoints => 
+            { 
+                endpoints.MapHealthChecks("/service1", new HealthCheckOptions()
+                {
+                    Predicate = (check) => check.Tags.Contains("Service 1"),
+                    ResponseWriter = JsonWriter.WriteResponse
+                });
+                endpoints.MapHealthChecks("/service2", new HealthCheckOptions()
+                {
+                    Predicate = (check) => check.Tags.Contains("Service 2"),
+                    ResponseWriter = JsonWriter.WriteResponse
+                });
+                endpoints.MapHealthChecks("/service3", new HealthCheckOptions()
+                {
+                    Predicate = (check) => check.Tags.Contains("Service 3"),
+                    ResponseWriter = JsonWriter.WriteResponse
+                });
+
             });
         }
     }
