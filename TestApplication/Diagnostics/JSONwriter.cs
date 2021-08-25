@@ -27,13 +27,13 @@ namespace TestApplication.Diagnostics
                 {
                     writer.WriteStartObject();
                     writer.WriteString("status", result.Status.ToString());
-                    writer.WriteStartObject("results");
+                    writer.WriteStartArray("results");
                     foreach (var entry in result.Entries)
                     {
-                        writer.WriteStartObject(entry.Key);
+                        writer.WriteStartObject();
+                        writer.WriteString("name", entry.Key.ToString());
                         writer.WriteString("status", entry.Value.Status.ToString());
                         writer.WriteString("description", entry.Value.Description);
-                        writer.WriteStartObject("data");
                         foreach (var item in entry.Value.Data)
                         {
                             writer.WritePropertyName(item.Key);
@@ -42,9 +42,8 @@ namespace TestApplication.Diagnostics
                                                     typeof(object));
                         }
                         writer.WriteEndObject();
-                        writer.WriteEndObject();
                     }
-                    writer.WriteEndObject();
+                    writer.WriteEndArray();
                     writer.WriteEndObject();
                 }
 

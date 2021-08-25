@@ -9,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using TestApplication.Diagnostics;
 
 namespace TestApplication
@@ -54,17 +56,35 @@ namespace TestApplication
                 endpoints.MapHealthChecks("/service1", new HealthCheckOptions()
                 {
                     Predicate = (check) => check.Tags.Contains("Service 1"),
-                    ResponseWriter = JsonWriter.WriteResponse
+                    ResponseWriter = JsonWriter.WriteResponse,
+                    ResultStatusCodes =
+                    {
+                        [HealthStatus.Healthy] = StatusCodes.Status200OK,
+                        [HealthStatus.Degraded] = StatusCodes.Status200OK,
+                        [HealthStatus.Unhealthy] = StatusCodes.Status200OK
+                    }
                 });
                 endpoints.MapHealthChecks("/service2", new HealthCheckOptions()
                 {
                     Predicate = (check) => check.Tags.Contains("Service 2"),
-                    ResponseWriter = JsonWriter.WriteResponse
+                    ResponseWriter = JsonWriter.WriteResponse,
+                    ResultStatusCodes =
+                    {
+                        [HealthStatus.Healthy] = StatusCodes.Status200OK,
+                        [HealthStatus.Degraded] = StatusCodes.Status200OK,
+                        [HealthStatus.Unhealthy] = StatusCodes.Status200OK
+                    }
                 });
                 endpoints.MapHealthChecks("/service3", new HealthCheckOptions()
                 {
                     Predicate = (check) => check.Tags.Contains("Service 3"),
-                    ResponseWriter = JsonWriter.WriteResponse
+                    ResponseWriter = JsonWriter.WriteResponse,
+                    ResultStatusCodes =
+                    {
+                        [HealthStatus.Healthy] = StatusCodes.Status200OK,
+                        [HealthStatus.Degraded] = StatusCodes.Status200OK,
+                        [HealthStatus.Unhealthy] = StatusCodes.Status200OK
+                    }
                 });
 
             });
