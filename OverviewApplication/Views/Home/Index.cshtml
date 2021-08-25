@@ -3,13 +3,43 @@
     ViewData["Title"] = "Home Page";
 }
 
-@foreach (var item in Model)
-{
-    <p>@item.status</p>
-    foreach (var result in @item.results)
+<head>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#table_id').DataTable({
+                paging: false
+            });
+        });
+    </script>
+</head>
+
+<body>
+<table id ="table_id" class ="display">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Description</th>
+        <th>HealthCheck Endpoint</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
     {
-        <p>@result.name</p>
-        <p>@result.status</p>
-        <p>@result.description</p>
+        foreach (var result in @item.results)
+        {
+            <tr>
+                <td>@result.name</td>
+                <td>@result.status</td>
+                <td>@result.description</td>
+                <td><a href="@item.HealthEndpoint">@item.HealthEndpoint</a></td>
+            </tr>
+        }
     }
-}
+    </tbody>
+</table>
+</body>

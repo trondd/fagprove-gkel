@@ -32,6 +32,8 @@ namespace OverviewApplication.Services
                 var response = await httpClient.GetAsync(endpoint);
                 var resultJson = await response.Content.ReadAsStringAsync();
                 var result = JsonSerializer.Deserialize<HealthContent>(resultJson);
+                result.HealthEndpoint = new Uri(httpClient.BaseAddress + endpoint);
+
 
                 list.Add(result);
             }

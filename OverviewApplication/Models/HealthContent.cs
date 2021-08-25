@@ -8,6 +8,7 @@ namespace OverviewApplication.Models
     public class HealthContent
     {
         public string status { get; set; }
+        public Uri HealthEndpoint { get; set; }
         public HealthItem[] results { get; set; }
     }
 }

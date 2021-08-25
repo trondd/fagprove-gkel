@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using OverviewApplication.Models;
 using OverviewApplication.Services;
@@ -13,24 +14,25 @@ namespace OverviewApplication.Controllers
     public class HomeController : Controller
     {
         
-        private readonly IRepository m_repository;
+        private readonly IRepository _repository;
+        private readonly IConfiguration _configuration;
 
-        public HomeController(IRepository repository)
+        public HomeController(IRepository repository, IConfiguration configuration)
         {
-            m_repository = repository;
+            _repository = repository;
+            _configuration = configuration;
         }
 
-        public List<string> endpoints = new List<string>()
+        public List<string> GetEndpoints()
         {
-            "service1",
-            "service2",
-            "service3"
-        };
+            var configEndpoints = _configuration.GetSection("Endpoints").GetChildren().Select(x => x.Value).ToList();
+            return configEndpoints;
+        }
 
         public async Task<IActionResult> Index()
         {
 
-            var result = await m_repository.GetAll(endpoints);
+            var result = await _repository.GetAll(GetEndpoints());
             return View(result);
         }
     }
