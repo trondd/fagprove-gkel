@@ -16,26 +16,37 @@ namespace TestApplication.Diagnostics
             //Add dummy health checks with random results for 3 different services
             for (int i = 0; i < 5; i++)
             {
-                var hResult = new RandomHealthResult().RandomHealthCheckResult();
                 var name = "Service1.HealthCheck";
                 name += i.ToString();
-                builder.AddCheck(name, () => hResult , tags:new []{"Service 1"});
+                builder.AddCheck<RandomHealthResult>(name, tags: new[] { "Service 1" });
             }
 
             for (int i = 0; i < 5; i++)
             {
-                var hResult = new RandomHealthResult().RandomHealthCheckResult();
                 var name = "Service2.HealthCheck";
                 name += i.ToString();
-                builder.AddCheck(name, () => hResult, tags: new[] { "Service 2" });
+                builder.AddCheck<RandomHealthResult>(name, tags: new[] { "Service 2" });
             }
 
             for (int i = 0; i < 5; i++)
             {
-                var hResult = new RandomHealthResult().RandomHealthCheckResult();
                 var name = "Service3.HealthCheck";
                 name += i.ToString();
-                builder.AddCheck(name, () => hResult, tags: new[] { "Service 3" });
+                builder.AddCheck<RandomHealthResult>(name, tags: new[] { "Service 3" });
+            }
+
+            for (int i = 0; i < 5; i++)
+            {
+                var name = "Service4.HealthCheck";
+                name += i.ToString();
+                builder.AddCheck<RandomHealthResult>(name, tags: new[] { "Service 4" });
+            }
+
+            for (int i = 0; i < 5; i++)
+            {
+                var name = "Service5.HealthCheck";
+                name += i.ToString();
+                builder.AddCheck<RandomHealthResult>(name, tags: new[] { "Service 5" });
             }
 
             return builder;

@@ -86,6 +86,28 @@ namespace TestApplication
                         [HealthStatus.Unhealthy] = StatusCodes.Status200OK
                     }
                 });
+                endpoints.MapHealthChecks("/service4", new HealthCheckOptions()
+                {
+                    Predicate = (check) => check.Tags.Contains("Service 4"),
+                    ResponseWriter = JsonWriter.WriteResponse,
+                    ResultStatusCodes =
+                    {
+                        [HealthStatus.Healthy] = StatusCodes.Status200OK,
+                        [HealthStatus.Degraded] = StatusCodes.Status200OK,
+                        [HealthStatus.Unhealthy] = StatusCodes.Status200OK
+                    }
+                });
+                endpoints.MapHealthChecks("/service5", new HealthCheckOptions()
+                {
+                    Predicate = (check) => check.Tags.Contains("Service 5"),
+                    ResponseWriter = JsonWriter.WriteResponse,
+                    ResultStatusCodes =
+                    {
+                        [HealthStatus.Healthy] = StatusCodes.Status200OK,
+                        [HealthStatus.Degraded] = StatusCodes.Status200OK,
+                        [HealthStatus.Unhealthy] = StatusCodes.Status200OK
+                    }
+                });
 
             });
         }

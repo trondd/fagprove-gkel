@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace OverviewApplication.Models
 {
-    public class HealthContent
+    public class Endpoint
     {
-        public string status { get; set; }
-        public Uri HealthEndpoint { get; set; }
+        public string Name { get; set; }
+        public Uri Uri { get; set; }
+        public string Description { get; set; }
         public int Id { get; set; }
-        public HealthItem[] results { get; set; }
     }
 }

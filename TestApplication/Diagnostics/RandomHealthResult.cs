@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace TestApplication.Diagnostics
 {
-    public class RandomHealthResult
+    public class RandomHealthResult : IHealthCheck
     {
         private readonly Random _random = new Random();
 
@@ -31,5 +32,19 @@ namespace TestApplication.Diagnostics
                     return HealthCheckResult.Unhealthy("HealthCheck Is degraded, couldn't parse random number gen");
             }
         }
+
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return RandomHealthCheckResult();
+            }
+            catch (Exception e)
+            {
+                return HealthCheckResult.Unhealthy("Failed getting a random result", e);
+            }
+        }
+
     }
 }

@@ -12,27 +12,27 @@ namespace OverviewApplication.Services
 {
     public class Repository : IRepository
     {
-        private readonly IMemoryCache _cache;
         private readonly ITypedHttpClient _client;
 
-        public Repository(IMemoryCache cache, ITypedHttpClient client)
+        public Repository(ITypedHttpClient client)
         {
-            _cache = cache;
             _client = client;
         }
 
-        public async Task<List<HealthContent>> GetAll(List<string> endpoints)
+        public async Task<List<HealthContent>> GetAll(List<Endpoint> endpoints)
         {
+            var id = 0;
             var list = new List<HealthContent>();
 
             var httpClient = _client.GetClient();
 
             foreach (var endpoint in endpoints)
             {
-                var response = await httpClient.GetAsync(endpoint);
+                var response = await httpClient.GetAsync(endpoint.Uri);
                 var resultJson = await response.Content.ReadAsStringAsync();
                 var result = JsonSerializer.Deserialize<HealthContent>(resultJson);
-                result.HealthEndpoint = new Uri(httpClient.BaseAddress + endpoint);
+                result.HealthEndpoint = endpoint.Uri;
+                result.Id = id++;
 
 
                 list.Add(result);
@@ -40,5 +40,6 @@ namespace OverviewApplication.Services
             
             return list;
         }
+
     }
 }

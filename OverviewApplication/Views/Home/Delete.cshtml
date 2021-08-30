@@ -1,0 +1,9 @@
+﻿@model Endpoint
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h3>Are you sure you want to delete @Model.Name with the endpoint of @Model.Uri ?</h3>
+<form asp-action="Delete">
+    <input type="submit" value="Delete"/> | <a asp-action="Admin">Back to admin panel</a>
+</form>

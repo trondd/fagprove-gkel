@@ -12,7 +12,7 @@ namespace OverviewApplication.Services
 
         public TypedHttpClient(HttpClient client)
         {
-            client.BaseAddress = new Uri("https://localhost:44351/");
+            //client.BaseAddress = new Uri("https://localhost:44351/");
             _client = client;
         }
         public HttpClient GetClient()
