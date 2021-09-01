@@ -1,4 +1,4 @@
-﻿@model List<HealthContent>
+﻿@model List<ServiceItem>
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -10,46 +10,113 @@
 
     <script>
         $(document).ready(function () {
-            $('#table_id').DataTable({
+            var table = $('#table_id').DataTable({
+                "ajax": {
+                    "url": '/Home/ServicesJson',
+                    "dataSrc": '',
+                    "type": 'GET',
+                    "processing": true,
+                    "serverSide": true,
+                },
+                "columns": [
+                    { "data": "id" },
+                    {
+                        "className": 'details-control',
+                        "orderable": false,
+                        "data": null,
+                        "defaultContent": ''
+                    },
+                    { "data": 'serviceName' },
+                    { "data": 'status' },
+                    { "data": 'endpoint' }
+                ],
                 "paging": false,
                 "columnDefs": [
                     {
                         "targets": -1,
                         "orderable": false,
+                        "searchable": false
                     },
                     {
-                        "targets": -2,
-                        "orderable": false,
-                    }]
+                        "targets": [0],
+                        "visible": false,
+                        "searchable": false
+                    }
+                ]
             });
+            //setInterval(function() {
+            //    table.ajax.reload(null, false);
+            //}, 10000);
+            $('#table_id tbody').on('click',
+                'td.details-control',
+                function () {
+                    var tr = $(this).closest('tr');
+                    var row = table.row(tr);
+                    //var id does not get the values of the parent row, only the first row in table.
+                    var id = $(this).find('td').first().text();
+      
+                    //get index to use for child table ID
+                    var index = row.index();
+ 
+                    if ( row.child.isShown() ) {
+                        // This row is already open - close it
+                        row.child.hide();
+                        tr.removeClass('shown');
+                    }
+                    else {
+                        // Open this row
+                        row.child( 
+                            '<table class="child_table" id = "child_details' + index + '" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px; width: 80%;">'+
+                            '<tbody>' +
+                            '</tbody></table>').show();
+                        
+                        var childTable = $('#child_details' + index).DataTable({
+                                "ajax": {
+                                "url": '/Home/HealthJson/' + id ,
+                                    "dataSrc": '',
+                                    "type": 'GET',
+                                    "processing": true,
+                                    "serverSide": true,
+                                
+                            },
+                            "columns": [
+                                { "data": "name" },
+                                { "data": "status" },
+                                { "data": "description" },
+                            ],
+                                "paging": false,
+                                "columnDefs": [
+                                    {
+                                        "targets": -1,
+                                        "orderable": false,
+                                        "searchable": false
+                                    }
+                                ]
+                        });
+                        setInterval(function() {
+                            childTable.ajax.reload(null, false);
+                        }, 10000);
+                        tr.addClass('shown');
+                    }
+
+                });
         });
+
     </script>
-    <meta http-equiv="refresh" content="30"/>
+    <style>
+        td.details-control {
+            background: url('https://www.datatables.net/examples/resources/details_open.png') no-repeat center center;
+            cursor: pointer;
+        }
+        tr.shown td.details-control {
+            background: url('https://www.datatables.net/examples/resources/details_close.png') no-repeat center center;
+        }
+    </style>
 </head>
 
 <body>
-<table id ="table_id" class ="display">
-    <thead>
-    <tr>
-        <th>Name</th>
-        <th>Status</th>
-        <th>Description</th>
-        <th>HealthCheck Endpoint</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model)
-    {
-        foreach (var result in @item.results)
-        {
-            <tr>
-                <td>@result.name</td>
-                <td>@result.status</td>
-                <td>@result.description</td>
-                <td><a href="@item.HealthEndpoint">@item.HealthEndpoint</a></td>
-            </tr>
-        }
-    }
-    </tbody>
-</table>
+<div>
+    <table id="table_id" class="display">
+    </table>
+</div>
 </body>

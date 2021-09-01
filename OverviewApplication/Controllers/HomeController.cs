@@ -46,20 +46,38 @@ namespace OverviewApplication.Controllers
                 return EndPoints;
             }
         }
-        public Task<List<HealthContent>> HealthData
+
+        public async Task<List<ServiceItem>> GetServiceItems()
         {
-            get
+            var healthResults = await _repository.GetAll(GetEndpoints());
+            var list = new List<ServiceItem>();
+
+            foreach (var item in healthResults)
             {
-                var result = _repository.GetAll(GetEndpoints());
-                return result;
+                list.Add(new ServiceItem{endpoint = item.HealthEndpoint, status = item.status, serviceName = item.service, id = item.Id});
             }
+
+            return list;
         }
-        
+
+        public async Task<List<HealthItem>> GetHealthResults(int id)
+        {
+            var healthResults = await _repository.GetAll(GetEndpoints());
+            var list = new List<HealthItem>();
+            var find = healthResults.Find(i => i.Id == id);
+
+            foreach (var result in find.results)
+            {
+                list.Add(result);
+            }
+
+            return list;
+        }
 
         public async Task<IActionResult> Index()
         {
 
-            var result = await HealthData;
+            var result = await GetServiceItems();
             return View(result);
         }
 
@@ -134,6 +152,24 @@ namespace OverviewApplication.Controllers
 
             EndPoints.Add(endpointData);
             return RedirectToAction("Admin");
+        }
+
+        /*public async Task<IActionResult> Details()
+        {
+            var result = await HealthData;
+            return PartialView("_HealthResults", result);
+        }*/
+
+        public async Task<IActionResult> ServicesJson()
+        {
+            var result = await GetServiceItems();
+            return new JsonResult(result);
+        }
+
+        public async Task<IActionResult> HealthJson(int id)
+        {
+            var result = await GetHealthResults(id);
+            return new JsonResult(result);
         }
     }
 }
