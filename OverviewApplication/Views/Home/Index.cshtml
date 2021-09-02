@@ -9,6 +9,17 @@
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
 
     <script>
+        var childRows = null;
+        var searches = [];
+        var canOpenChild = true;
+        function format(d) {
+            return '<table class="child_table" id = "child_details' +
+                d +
+                '" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px; width: 80%;">' +
+                '<tbody>' +
+                '</tbody></table>';
+
+        }
         $(document).ready(function () {
             var table = $('#table_id').DataTable({
                 "ajax": {
@@ -44,19 +55,25 @@
                     }
                 ]
             });
-            //setInterval(function() {
-            //    table.ajax.reload(null, false);
-            //}, 10000);
+
+            //Reload the table, sending new ajax request to server
+            setInterval(function () {
+                searches = [];
+                childRows = table.rows($('.shown'));
+                $('input', 'tbody tr:not([class])').each(function () { searches.push(this.value) });
+                table.ajax.reload(null, false);
+            }, 10000);
+
+
             $('#table_id tbody').on('click',
                 'td.details-control',
                 function () {
                     var tr = $(this).closest('tr');
                     var row = table.row(tr);
-                    //var id does not get the values of the parent row, only the first row in table.
-                    var id = $(this).find('td').first().text();
-      
-                    //get index to use for child table ID
+
+                    //get index to use for child table ID and ID from parent table
                     var index = row.index();
+                    var id = table.cell(index, 0).data();
  
                     if ( row.child.isShown() ) {
                         // This row is already open - close it
@@ -65,18 +82,16 @@
                     }
                     else {
                         // Open this row
-                        row.child( 
-                            '<table class="child_table" id = "child_details' + index + '" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px; width: 80%;">'+
-                            '<tbody>' +
-                            '</tbody></table>').show();
+                        row.child(format(index)).show();
+                        tr.addClass('shown');
                         
                         var childTable = $('#child_details' + index).DataTable({
-                                "ajax": {
+                            "ajax": {
                                 "url": '/Home/HealthJson/' + id ,
-                                    "dataSrc": '',
-                                    "type": 'GET',
-                                    "processing": true,
-                                    "serverSide": true,
+                                "dataSrc": '',
+                                "type": 'GET',
+                                "processing": true,
+                                "serverSide": true,
                                 
                             },
                             "columns": [
@@ -84,23 +99,68 @@
                                 { "data": "status" },
                                 { "data": "description" },
                             ],
-                                "paging": false,
-                                "columnDefs": [
-                                    {
-                                        "targets": -1,
-                                        "orderable": false,
-                                        "searchable": false
-                                    }
-                                ]
+                            "paging": false,
+                            "columnDefs": [
+                                {
+                                    "targets": -1,
+                                    "orderable": false,
+                                    "searchable": false
+                                }
+                            ]
                         });
-                        setInterval(function() {
-                            childTable.ajax.reload(null, false);
-                        }, 10000);
-                        tr.addClass('shown');
                     }
 
                 });
+
+            table.on('draw', function () {
+                // If reloading table then show previously shown rows
+                if (childRows && canOpenChild) {
+                    canOpenChild = false;
+                    console.log(searches);
+                    childRows.every(function ( rowIdx, tableLoop, rowLoop ) {
+                        d = this.data();
+                        console.log(rowIdx);
+                        this.child($(format(rowIdx))).show();
+                        this.nodes().to$().addClass('shown');
+                        var id = table.cell(rowIdx, 0).data();
+                        var childTable = $('#child_details' + rowIdx).DataTable({
+                            "ajax": {
+                                "url": '/Home/HealthJson/' + id,
+                                "dataSrc": '',
+                                "type": 'GET',
+                                "processing": true,
+                                "serverSide": true,
+
+                            },
+                            "columns": [
+                                { "data": "name" },
+                                { "data": "status" },
+                                { "data": "description" },
+                            ],
+                            "paging": false,
+                            "search": {
+                                "search": searches[rowLoop]
+                            },
+                            "columnDefs": [
+                                {
+                                    "targets": -1,
+                                    "orderable": false,
+                                    "searchable": false
+                                }
+                            ]
+                        });
+                    } );
+      
+                    // Reset childRows so loop is not executed each draw
+                    childRows = null;
+                    canOpenChild = true;
+                }
+            });
+
+            
+    
         });
+        
 
     </script>
     <style>
