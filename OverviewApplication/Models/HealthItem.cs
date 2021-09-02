@@ -7,6 +7,7 @@ namespace OverviewApplication.Models
 {
     public class HealthItem
     {
+        //Datamodel for the result of a single healthcheck from a service
         public string name { get; set; }
 
         public string status { get; set; }

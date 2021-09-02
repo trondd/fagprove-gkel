@@ -1,0 +1,35 @@
+﻿@model OverviewApplication.Models.Endpoint
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<head>
+    <style>
+        .pb-3 {
+            padding-left: 30%;
+            padding-right: 30%;
+            padding-top: 10vh;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h3> Edit an existing Endpoint </h3><br />
+        <form asp-action="Edit" id="Edit_div">
+            <input type="hidden" asp-for="Id" />
+
+            <label asp-for="Name"></label>
+            <input asp-for="Name" />
+
+            <label asp-for="Description"></label>
+            <input asp-for="Description" />
+
+            <label asp-for="Uri"></label>
+            <input asp-for="Uri" />
+
+            <input type="submit" value="Save" />
+        </form><br />
+        <a asp-action="Index">Back to admin panel</a>
+    </div>
+</body>

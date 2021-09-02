@@ -19,9 +19,10 @@ namespace OverviewApplication.Services
             _client = client;
         }
 
-        public async Task<List<HealthContent>> GetAll(List<Endpoint> endpoints)
+        //Creates a new list of all the health results from all services listed in the endpoints list
+        public async Task<List<HealthResultContent>> GetAll(List<Endpoint> endpoints)
         {
-            var list = new List<HealthContent>();
+            var list = new List<HealthResultContent>();
 
             var httpClient = _client.GetClient();
 
@@ -29,7 +30,7 @@ namespace OverviewApplication.Services
             {
                 var response = await httpClient.GetAsync(endpoint.Uri);
                 var resultJson = await response.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<HealthContent>(resultJson);
+                var result = JsonSerializer.Deserialize<HealthResultContent>(resultJson);
                 result.service = endpoint.Name;
                 result.HealthEndpoint = endpoint.Uri;
 

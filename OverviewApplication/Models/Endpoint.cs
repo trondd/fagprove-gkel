@@ -8,6 +8,7 @@ namespace OverviewApplication.Models
 {
     public class Endpoint
     {
+        //Datamodel for the URL pointing to the services
         public string Name { get; set; }
         public Uri Uri { get; set; }
         public string Description { get; set; }

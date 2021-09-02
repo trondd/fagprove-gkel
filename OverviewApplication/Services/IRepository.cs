@@ -8,6 +8,6 @@ namespace OverviewApplication.Services
 {
     public interface IRepository
     {
-        Task<List<HealthContent>> GetAll(List<Endpoint> endpoints);
+        Task<List<HealthResultContent>> GetAll(List<Endpoint> endpoints);
     }
 }

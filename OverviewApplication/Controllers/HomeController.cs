@@ -81,85 +81,8 @@ namespace OverviewApplication.Controllers
             return View(result);
         }
 
-        public async Task<IActionResult> Admin()
-        {
-            var result = EndPoints;
-            return View(result);
-        }
-        
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var find = EndPoints.Find(i => i.Id == id);
-            if (find == null)
-            {
-                return NotFound();
-            }
-
-            return View(find);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            var result = EndPoints.Find(i => i.Id == id);
-            EndPoints.Remove(result);
-            return RedirectToAction("Admin");
-        }
-
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var find = EndPoints.Find(i => i.Id == id);
-            if (find == null)
-            {
-                return NotFound();
-            }
-
-            return View(find);
-        }
-
-        [HttpPost]
-        public ActionResult Edit(int id, Endpoint endpointData)
-        {
-            var oldValue = EndPoints.Find(i => i.Id == id);
-                oldValue.Uri = endpointData.Uri;
-                oldValue.Description = endpointData.Description;
-                oldValue.Name = endpointData.Name;
-                oldValue.Id = endpointData.Id;
-
-                return RedirectToAction("Admin");
-        }
-
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public ActionResult Create(Endpoint endpointData)
-        {
-            var id = EndPoints.Count();
-            endpointData.Id = id;
-
-            EndPoints.Add(endpointData);
-            return RedirectToAction("Admin");
-        }
-
-        /*public async Task<IActionResult> Details()
-        {
-            var result = await HealthData;
-            return PartialView("_HealthResults", result);
-        }*/
-
+        //Provide JSON endpoints for datatables to get data from
         public async Task<IActionResult> ServicesJson()
         {
             var result = await GetServiceItems();

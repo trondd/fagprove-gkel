@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 
 namespace OverviewApplication.Models
 {
-    public class HealthContent
+    public class HealthResultContent
     {
+        //Datamodel for the result of ALL services
         public string status { get; set; }
         public string service { get; set; }
         public Uri HealthEndpoint { get; set; }
